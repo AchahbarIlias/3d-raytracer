@@ -1,0 +1,43 @@
+def material(c)
+{
+  Materials.uniform( [ "ambient": c ] )
+}
+
+def scene_at(now)
+{
+	var t = Animations.animate(-20, 20, seconds(5))[now]
+	var camera = Cameras.perspective( [ "eye": pos(0,t,45),
+                                      "look_at": pos(0,0,0) ] )
+
+ 	var primitives = []
+
+	for (var n = 0; n < 10; n += 1) {
+	    var c1 = 0.4 - n * 10 / 255.0
+	    var c2 = 0.6 + n * 10 / 255.0
+	    var m = material(RGB(c2, c1, 0))
+	    var m2 = material(RGB(c1, c2, 0))
+		primitives.push_back( decorate(m, translate(vec(0,n,0), xz_disk(n))) )
+		primitives.push_back( decorate(m2, translate(vec(0,-n,0), xz_disk(n))) )
+  	}
+
+  	var root = union(primitives)
+
+	var lights = [ ]
+
+	create_scene(camera, root, lights)
+}
+
+var raytracer = Raytracers.v1()
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": raytracer ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )
+            

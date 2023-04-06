@@ -1,0 +1,55 @@
+// This function is called for multiple values of "now"
+def scene_at(now)
+{
+
+var camera = Cameras.perspective( [ "eye": pos(0,0,10),
+                                      "look_at": pos(0,0,0) ] )
+
+var sphere_material_red = Materials.uniform( [ "ambient": Colors.red() * 0.1,
+												"diffuse": Colors.red() * 0.8,
+												"specular": Colors.red() * 0.8,
+                                             	"specular_exponent": 2] )
+var sphere_material_blue = Materials.uniform( [ "ambient": Colors.blue() * 0.1,
+												"diffuse": Colors.blue() * 0.8,
+												"specular": Colors.blue() * 0.8,
+                                             	"specular_exponent": 8] )
+var sphere_material_green = Materials.uniform( [ "ambient": Colors.green() * 0.1,
+												 "diffuse": Colors.green() * 0.8,
+												 "specular": Colors.green() * 0.8,
+                                             	 "specular_exponent": 80] )
+                                             	 
+ var back_wall_material = Materials.uniform( [ "ambient": Colors.white() * 0.1,
+                                                "diffuse": Colors.white() * 0.8,
+                                                "specular": Colors.white() * 0.2,
+                                             	"specular_exponent": 30] )
+
+  var primitives = []
+
+  primitives.push_back( translate(vec(0,0,-2), decorate(back_wall_material, xy_plane())) )
+
+  primitives.push_back( decorate( sphere_material_red, translate(vec(-3,3,0), sphere()) ) )
+  primitives.push_back( decorate( sphere_material_red, translate(vec(3,3,0), sphere()) ) )
+  primitives.push_back( decorate( sphere_material_blue, translate(vec(-3,0,0), sphere()) ) )
+  primitives.push_back( decorate( sphere_material_blue, translate(vec(3,0,0), sphere()) ) )
+  primitives.push_back( decorate( sphere_material_green, translate(vec(-3,-3,0), sphere()) ) )
+  primitives.push_back( decorate( sphere_material_green, translate(vec(3,-3,0), sphere()) ) )
+  
+
+  var root = union(primitives)
+
+  var lights = [ Lights.omnidirectional( pos(0,4,4), Colors.white() ) ]
+
+  create_scene(camera, root, lights)
+}
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": Raytracers.v3() ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )

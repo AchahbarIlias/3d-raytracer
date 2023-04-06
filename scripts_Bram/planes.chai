@@ -1,0 +1,45 @@
+def scene_at(now)
+{
+	var camera = Cameras.perspective( [ "eye": pos(0,0,6),
+                                      "look_at": pos(0,0,0) ] )
+
+	var blue = Materials.uniform( [ "ambient": Colors.blue() * 0.9 ])
+	var red = Materials.uniform( [ "ambient": Colors.red() * 0.5 ])
+	var green = Materials.uniform( [ "ambient": Colors.green() * 0.5 ])
+	
+	var t = Animations.animate(1, 2, seconds(5))[now]
+	
+	var xyplane = decorate(blue, xy_plane())
+	var xzplane1 = decorate(red, translate(vec(0, 1, 0), xz_plane()))
+	var xzplane2 = decorate(red, translate(vec(0, -1, 0), xz_plane()))
+	var yzplane1 = decorate(green, translate(vec(-t, 0, 0), yz_plane()))
+	var yzplane2 = decorate(green, translate(vec(t, 0, 0), yz_plane()))
+	
+  	var root = union([
+		xyplane,
+		xzplane1,
+		xzplane2,
+		yzplane1,
+		yzplane2
+	])
+
+
+	var lights = [ ]
+
+	create_scene(camera, root, lights)
+}
+
+var raytracer = Raytracers.v1()
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": raytracer ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )
+            

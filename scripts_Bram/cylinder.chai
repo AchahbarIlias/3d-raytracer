@@ -1,0 +1,42 @@
+def scene_at(now)
+{
+	var t = Animations.animate(6, 65, seconds(5))[now]
+	var camera = Cameras.perspective( [ "eye": pos(t,t,t),
+                                      "look_at": pos(0,0,0) ] )
+
+	var red = Materials.uniform( [ "ambient": Colors.red() * 0.1,
+								   "diffuse": Colors.red() * 0.8 ] )
+	var blue = Materials.uniform( [ "ambient": Colors.blue() * 0.1,
+								   "diffuse": Colors.blue() * 0.8 ] )
+	var green = Materials.uniform( [ "ambient": Colors.green() * 0.1,
+								   "diffuse": Colors.green() * 0.8 ] )
+
+ 	var primitives = []
+
+	for (var n = 0; n < 11; n += 1) {
+		primitives.push_back( decorate(red, translate(vec(0,0,n*6), cylinder_along_y())) )
+		primitives.push_back( decorate(blue, translate(vec(0,n*6,0), cylinder_along_x())) )
+		primitives.push_back( decorate(green, translate(vec(n*6,0,0), cylinder_along_z())) )
+  	}
+
+  	var root = union(primitives)
+	
+	var lights = [ Lights.omnidirectional( pos(5, 5, 5), Colors.white()) ]
+
+	create_scene(camera, root, lights)
+}
+
+var raytracer = Raytracers.v2()
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": raytracer ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )
+            

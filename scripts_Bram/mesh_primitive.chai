@@ -1,0 +1,34 @@
+def scene_at(now)
+{
+	var t = Animations.animate(-5, 5, seconds(5))[now]
+
+	var camera = Cameras.perspective( [ "eye": pos(1*t,-4,10),
+	                                  "look_at": pos(0,0,0) ] )
+	
+	var mesh_material = Materials.uniform( [ "ambient": Colors.white() * 0.1,
+                                   			 "diffuse": Colors.white() * 0.8 ])
+	
+	var m = mesh("C:\\Users\\braml\\OneDrive\\Documenten\\School\\Toegepaste-informatica\\3D_computer_graphics\\scripts\\meshes\\pyramid.txt")
+	var decorated_mesh = decorate(mesh_material, m)
+	
+	var root = decorated_mesh
+	
+	var lights = [ Lights.omnidirectional( pos(0, 5, 5), Colors.white() ) ]
+	
+	create_scene(camera, root, lights)
+}
+
+var raytracer   = Raytracers.v2()
+
+var renderer    = Renderers.standard( [ "width": 500,
+                                        "height": 500,
+                                        "sampler": Samplers.single(),
+                                        "ray_tracer": raytracer ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )
+            

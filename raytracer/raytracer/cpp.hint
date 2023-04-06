@@ -1,0 +1,5 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define CHECK(expr) INTERNAL_CATCH_TEST( expr, Catch::ResultDisposition::ContinueOnFailure, "CHECK" )
+#define CHECK(condition) CCHECK(condition, ELPP_CURR_FILE_LOGGER_ID)

@@ -1,0 +1,36 @@
+def scene_at(now)
+{
+  	var camera = Cameras.perspective( [ "eye": pos(0,0,5),
+                                      "look_at": pos(-5,0,0) ] )
+
+	var yellow = Materials.uniform( [ "ambient": Colors.yellow() ])
+	var decorated_sphere = decorate(yellow, sphere())
+
+	var primitives = [ ]
+	
+	for ( var i = 0; i != 1000; i += 1 ) {
+		primitives.push_back( decorated_sphere )
+	}
+
+  	var root = union( primitives )
+
+
+	var lights = [ ]
+
+	create_scene(camera, bounding_box_accelerator(root), lights)
+}
+
+var raytracer = Raytracers.v3()
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": raytracer ] )
+
+pipeline( scene_animation(scene_at, seconds(2)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )
+            

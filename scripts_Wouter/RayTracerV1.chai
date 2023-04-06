@@ -1,0 +1,35 @@
+// This function is called for multiple values of "now"
+def scene_at(now)
+{
+
+var camera = Cameras.perspective( [ "eye": pos(0,0,10),
+                                      "look_at": pos(0,0,0) ] )
+
+var sphere_material_red = Materials.uniform( [ "ambient": Colors.red() ] )
+var sphere_material_orange = Materials.uniform( [ "ambient": Colors.yellow() ] )
+var sphere_material_green = Materials.uniform( [ "ambient": Colors.green() ] )
+
+  var primitives = []
+
+  primitives.push_back( decorate( sphere_material_red, translate(vec(0,3,0), sphere()) ) )
+  primitives.push_back( decorate( sphere_material_orange, sphere() ) )
+  primitives.push_back( decorate( sphere_material_green, translate(vec(0,-3,0), sphere()) ) )
+
+  var root = union(primitives)
+
+  var lights = [ Lights.omnidirectional( pos(0,1.9,0), Colors.white() ) ]
+
+  create_scene(camera, root, lights)
+}
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": Raytracers.v1() ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )

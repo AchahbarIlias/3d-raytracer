@@ -1,0 +1,44 @@
+def colored_material(color) {
+  Materials.uniform( [ "ambient": color * 0.1,
+                       "diffuse": color * 0.8,
+                       "specular": Colors.white(),
+                       "specular_exponent": 10 ] )
+}
+
+def scene_at(now)
+{
+
+ var t = Animations.animate(0.0, 1.0, seconds(3))[now]
+  var x = cos(degrees(360*t))
+  var y = sin(degrees(360*t))
+  
+    var camera = Cameras.perspective( [ "eye": pos(10 * y,0,10 * x),
+                                        "look_at": pos(0,0,0) ] )
+    var root = union([
+    translate(vec(-3, 2, 0), resize_x(decorate(colored_material(Colors.green()), sphere()),1.5)),
+    translate(vec(-3, 0, 0), resize_y(decorate(colored_material(Colors.blue()), sphere()),1.5)),
+    translate(vec(-3, -2, 0), resize_z(decorate(colored_material(Colors.red()), sphere()),1.5)),
+    translate(vec(3, 1, 0), resize_x_uniform(decorate(colored_material(Colors.red()), sphere()),0.5)),
+    translate(vec(3, 0, 0), resize_y_uniform(decorate(colored_material(Colors.green()), sphere()),0.5)),
+    translate(vec(3, -1, 0), resize_z_uniform(decorate(colored_material(Colors.blue()), sphere()),0.5)),
+    decorate(colored_material(Colors.white()), sphere())
+  ])
+
+    var lights = [ Lights.omnidirectional( pos(0,5,5), Colors.white() ) , Lights.omnidirectional( pos(0,-5,-5), Colors.white() )]
+
+    create_scene(camera, root, lights)
+}
+
+var raytracer = Raytracers.latest()
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": Raytracers.v2() ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )

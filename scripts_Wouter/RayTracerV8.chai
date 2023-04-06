@@ -1,0 +1,55 @@
+// This function is called for multiple values of "now"
+def scene_at(now)
+{
+var camera = Cameras.perspective( [ "eye": pos(0,0,8),
+                                      "look_at": pos(0,0,0) ] )
+                                             	
+var x = Animations.animate(10, 50, seconds(5))
+var sphere_material = Materials.uniform( [ "ambient": Colors.white() * 0.1,
+												"diffuse": Colors.white() * 0.8,
+												"transparency": 1,
+                                             	"refractive_index": (x[now])/10])
+
+var sphere_material_red = Materials.uniform( [ "ambient": Colors.red() * 0.1,
+												"diffuse": Colors.red() * 0.8,
+												"specular": Colors.white() * 0.8,
+                                             	"specular_exponent": 10] )
+                                             	
+var sphere_material_green = Materials.uniform( [ "ambient": Colors.green() * 0.1,
+												"diffuse": Colors.green() * 0.8,
+												"specular": Colors.white() * 0.8,
+                                             	"specular_exponent": 10] )
+												
+var sphere_material_blue = Materials.uniform( [ "ambient": Colors.blue() * 0.1,
+												"diffuse": Colors.blue() * 0.8,
+												"specular": Colors.white() * 0.8,
+                                             	"specular_exponent": 10] )
+
+  var primitives = []
+  primitives.push_back( decorate( sphere_material, translate(vec(0,0,5), sphere()) ) )
+  
+  var i = -10;
+  for (var n = 0; n < 20; n += 1) {
+	primitives.push_back( decorate( sphere_material_red, translate(vec(i,2,0), sphere()) ) )
+  	primitives.push_back( decorate( sphere_material_green, translate(vec(i,-2,0), sphere()) ) )
+  	primitives.push_back( decorate( sphere_material_blue, translate(vec(i,0,0), sphere()) ) )
+	i = i+2
+  }
+
+  var root = union(primitives)
+  var lights = [ Lights.omnidirectional(pos(0,10,2), Colors.white() )]
+
+  create_scene(camera, root, lights)
+}
+
+var renderer = Renderers.standard( [ "width": 500,
+                                     "height": 500,
+                                     "sampler": Samplers.single(),
+                                     "ray_tracer": Raytracers.v8() ] )
+
+pipeline( scene_animation(scene_at, seconds(5)),
+          [ Pipeline.animation(30),
+            Pipeline.renderer(renderer),
+            Pipeline.wif(),
+            Pipeline.base64(),
+            Pipeline.stdout() ] )

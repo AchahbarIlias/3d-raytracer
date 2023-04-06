@@ -1,0 +1,47 @@
+{
+    "url": "https://github.com/ucll-3dcg-2122/raytracer-wouter_bram-co",
+    "team-members": [
+        {
+            "id": "r0744789",
+            "firstName": "Wouter",
+            "lastName": "Janssen",
+            "status": "Defense in January",
+            "extensions": [
+                "Matrix Transformations",
+                "Circular Animation",
+                "Quaternions",
+                "Ray Tracer v1",
+                "Ray Tracer v2",
+                "Ray Tracer v3",
+                "Ray Tracer v4",
+                "Ray Tracer v5",
+                "Ray Tracer v6",
+                "Ray Tracer v7",
+                "Ray Tracer v8",
+                "Mesh Optimizer"
+            ]
+        },
+        {
+            "id": "r0762768",
+            "firstName": "Bram",
+            "lastName": "Lemeire",
+            "status": "Defense in January",
+            "extensions": [
+                "Scripting",
+                "Bounding Box Accelerator",
+                "Planes",
+                "Box",
+                "Triangle",
+                "Cylinder",
+                "Disk",
+                "Easing Library",
+                "Lissajous Animation",
+                "Polynomial Easing Functions",
+                "Spot Lights",
+                "Fisheye Camera",
+                "Mesh Primitive",
+                "Mesh Optimizer"
+            ]
+        }
+    ]
+}
